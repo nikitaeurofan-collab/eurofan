@@ -16,7 +16,8 @@
 | Имя | Вера Сомова |
 | Ник | `@vera.v.evropu` |
 | Возраст | 24 |
-| Где живёт (по сюжету) | Валенсия, Испания, третий год |
+| Родилась (по сюжету) | 2002, Самара |
+| Где живёт (по сюжету) | Валенсия, Испания, район Руссафа, третий год |
 | Ниша | Европа без переплат: поездки, переезд, быт, деньги |
 | Слоган | «Сначала считаем — потом едем» |
 | Шапка профиля | «Виртуальная Вера, настоящие цифры. Цены и факты проверяет живая команда. Считаю, где вы переплачиваете в Европе» |
@@ -25,9 +26,27 @@
 
 Это история персонажа, а не биография живого человека. Вера прямо говорит, что её история придумана (см. раздел 11).
 
-- Выросла в Самаре, училась на логиста. Ещё студенткой подрабатывала в транспортной компании: считала маршруты фур и экономию на каждом километре. Отсюда привычка всё сводить в таблицы.
-- В 21 год уехала в Валенсию по студенческому обмену на семестр и осталась: доучилась, сейчас работает координатором в небольшой логистической фирме. В первый год переплачивала за всё подряд: аренду, связь, банк, такси. Начала записывать, где именно теряет деньги.
-- Блог вырос из гугл-таблицы «Где я потеряла деньги в первый год», которую она скидывала однокурсникам.
+### Биография
+
+| Год | Возраст | Что происходит |
+|---|---|---|
+| 2002 | 0 | Родилась в Самаре. Мама — бухгалтер, папа — водитель-дальнобойщик. Дома всегда считали деньги и километры. |
+| 2019 | 17 | Поступила в самарский вуз на логистику. |
+| 2020–2022 | 18–20 | Подрабатывала диспетчером в транспортной компании: считала маршруты фур и экономию на каждом километре. Отсюда привычка всё сводить в таблицы. |
+| 2023 | 21 | Уехала по студенческому обмену в Валенсию на один семестр. Город и порт (один из крупнейших в Средиземноморье) затянули, и она осталась. |
+| 2023–2024 | 21–22 | Доучилась в Валенсии на магистратуре по цепочкам поставок. Первый год переплачивала за всё подряд: аренду, связь, банк, такси. Начала записывать, где именно теряет деньги. |
+| 2024 | 22 | Устроилась координатором в небольшую логистическую фирму у порта. |
+| 2025 | 23 | Гугл-таблица «Где я потеряла деньги в первый год», которую она скидывала однокурсникам, разошлась по чатам. Так появился блог. |
+| 2026 | 24 | Ведёт блог, работает на полставки, живёт в Руссафе с котом Тапасом. |
+
+### Где живёт
+
+- **Район:** Руссафа — модный квартал Валенсии с кафе, рынком и старыми домами. Снимает маленькую квартиру с балконом на третьем этаже.
+- **Рядом:** рынок Руссафа (там она подобрала кота), вокзал Estació del Nord в 10 минутах пешком, до пляжа Мальварроса — на трамвае и автобусе.
+- **Любимые места для съёмок:** балкон с бугенвиллеей, кухня с бело-голубой плиткой, уличные кафе Руссафы, вокзал, Старый город, набережная.
+
+### Детали характера и быта
+
 - Испанский — B1 с заметным акцентом, сама над этим шутит.
 - Рыжий кот Тапас, подобранный у рынка Руссафа, иногда мелькает в кадре.
 - Личная жизнь остаётся за кадром: «это не тема блога».
@@ -35,7 +54,7 @@
 
 ## 3. Внешность (держать одинаковой во всех кадрах)
 
-- Длинные тёплые светло-каштановые волосы, чаще в низком небрежном пучке, пара прядей выбивается
+- Длинные тёплые светло-каштановые волосы ниже плеч, обычно распущенные, мягкими волнами
 - Лёгкие веснушки на носу, естественная кожа, лёгкий натуральный макияж
 - Серо-зелёные глаза, маленькие серебряные серьги-кольца
 - Когда «считает», надевает круглые очки в черепаховой оправе
@@ -124,15 +143,17 @@
 **Основной портрет (аватар, 4:5)**
 
 ```
-Candid smartphone photo of a beautiful 24-year-old woman, adult, naturally
-attractive with soft features, expressive grey-green eyes, long light-brown hair
-in a loose messy low bun with a few strands falling on her face, light freckles
-across her nose, natural glowing skin with real skin texture, light natural makeup,
-small silver hoop earrings. She wears an olive linen shirt over a white t-shirt.
-She sits at a small metal table of a street cafe in a narrow sunny street in
-Valencia, Spain, holding a worn mustard-yellow notebook and a pen, a cup of coffee
-on the table. Warm genuine smile, looking directly at the camera. Late afternoon
-golden side light, slight background blur, everyday colors, realistic, shot on iPhone
+Photo of a beautiful 24-year-old woman, adult, naturally attractive with soft
+features, expressive grey-green eyes, long light-brown hair worn down, loose soft
+waves falling below her shoulders, light freckles across her nose, natural glowing
+skin with real skin texture, light natural makeup, small silver hoop earrings.
+She wears an olive linen shirt over a white t-shirt and blue jeans. She stands
+leaning her shoulder against a sunlit warm ochre plaster wall in an old street of
+Valencia, Spain, green wooden shutters and pink bougainvillea on the wall right
+next to her, her hands relaxed in the pockets of her jeans. Warm genuine smile,
+looking directly at the camera. Bright soft daylight, everything in sharp focus,
+the wall texture, shutters and flowers crisp and detailed, deep depth of field,
+clean balanced aesthetic composition, warm muted colors, realistic photo
 ```
 
 **Негативный промпт**
@@ -140,8 +161,12 @@ golden side light, slight background blur, everyday colors, realistic, shot on i
 ```
 teenager, child, underage, plastic skin, airbrushed, doll face, heavy makeup,
 studio lighting, text, watermark, logo, extra fingers, distorted hands, cartoon,
-3d render, older woman, wrinkles
+3d render, older woman, wrinkles, hair bun, ponytail, updo, short hair, blurry,
+blurry background, bokeh, shallow depth of field, soft focus, holding objects,
+cup, notebook, book, phone
 ```
+
+Резкий фон проще всего получить, если поставить героиню вплотную к стене: размывать нечего. На фоне длинной улицы модель почти всегда добавляет размытие.
 
 **Варианты сцен** (меняется только конец промпта, внешность остаётся той же):
 
@@ -162,7 +187,7 @@ studio lighting, text, watermark, logo, extra fingers, distorted hands, cartoon,
 
 1. Возьмите `vera-main.jpg` как эталон лица (или сделайте 10–20 генераций и выберите другое).
 2. Дальше используйте его как референс (функция character reference или image reference в генераторе) либо обучите LoRA на 15–20 удачных кадрах.
-3. Не меняйте опорные приметы: пучок, веснушки, серьги-кольца, жёлтый блокнот.
+3. Не меняйте опорные приметы: длинные распущенные волосы, веснушки, серьги-кольца, оливковая рубашка.
 
 ## 11. «Виртуальная Вера — настоящие цифры»: открытый ИИ как фишка
 
