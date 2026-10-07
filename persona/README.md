@@ -151,8 +151,8 @@ studio lighting, text, watermark, logo, extra fingers, distorted hands, cartoon,
 
 | Файл | Модель | Seed | Размер |
 |---|---|---|---|
-| `photos/vera-main.jpg` — основной портрет | Z-Image-Turbo (AI Horde), 9 шагов, CFG 1, k_euler | 21 | 576×704 |
-| `photos/vera-alt.jpg` — запасной вариант | то же | 7 | 576×704 |
+| `photos/vera-main.jpg` — основной портрет | Z-Image-Turbo (AI Horde), 9 шагов, CFG 1, k_euler | 14 | 576×704 |
+| `photos/vera-alt.jpg` — запасной вариант | то же | 33 | 576×704 |
 
 Оба кадра сгенерированы по промпту выше с негативным промптом. Размер ограничен бесплатным анонимным доступом к AI Horde. Для постов в 1080 px перегенерируйте основной портрет в более мощном генераторе, используя `vera-main.jpg` как референс лица.
 
