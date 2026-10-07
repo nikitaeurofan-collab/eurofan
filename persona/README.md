@@ -15,17 +15,17 @@
 |---|---|
 | Имя | Вера Сомова |
 | Ник | `@vera.v.evropu` |
-| Возраст | 32 |
-| Где живёт (по сюжету) | Валенсия, Испания, четвёртый год |
+| Возраст | 24 |
+| Где живёт (по сюжету) | Валенсия, Испания, третий год |
 | Ниша | Европа без переплат: поездки, переезд, быт, деньги |
 | Слоган | «Сначала считаем — потом едем» |
 | Шапка профиля | «Виртуальная Вера, настоящие цифры. Цены и факты проверяет живая команда. Считаю, где вы переплачиваете в Европе» |
 
 ## 2. Легенда персонажа
 
-- Выросла в Самаре. Семь лет проработала логистом в транспортной компании: планировала маршруты фур и выжимала экономию на каждом километре. Отсюда привычка всё сводить в таблицы.
-- В 28 лет уехала в Валенсию «попробовать на год» и осталась. В первый год переплачивала за всё подряд: аренду, связь, банк, такси. Начала записывать, где именно теряет деньги.
-- Блог вырос из гугл-таблицы «Где я потеряла деньги в первый год», которую она скидывала знакомым.
+- Выросла в Самаре, училась на логиста. Ещё студенткой подрабатывала в транспортной компании: считала маршруты фур и экономию на каждом километре. Отсюда привычка всё сводить в таблицы.
+- В 21 год уехала в Валенсию по студенческому обмену на семестр и осталась: доучилась, сейчас работает координатором в небольшой логистической фирме. В первый год переплачивала за всё подряд: аренду, связь, банк, такси. Начала записывать, где именно теряет деньги.
+- Блог вырос из гугл-таблицы «Где я потеряла деньги в первый год», которую она скидывала однокурсникам.
 - Испанский — B1 с заметным акцентом, сама над этим шутит.
 - Рыжий кот Тапас, подобранный у рынка Руссафа, иногда мелькает в кадре.
 - Личная жизнь остаётся за кадром: «это не тема блога».
@@ -33,8 +33,8 @@
 
 ## 3. Внешность (держать одинаковой во всех кадрах)
 
-- Тёплые светло-каштановые волосы до плеч, чаще в низком небрежном пучке, пара прядей выбивается
-- Лёгкие веснушки, естественная кожа с порами, макияжа почти нет
+- Длинные тёплые светло-каштановые волосы, чаще в низком небрежном пучке, пара прядей выбивается
+- Лёгкие веснушки на носу, естественная кожа, лёгкий натуральный макияж
 - Серо-зелёные глаза, маленькие серебряные серьги-кольца
 - Когда «считает», надевает круглые очки в черепаховой оправе
 - Одежда: льняные рубашки (оливковая, белая, песочная), простые футболки, джинсы, кеды; осенью бежевый свитер
@@ -122,22 +122,23 @@
 **Основной портрет (аватар, 4:5)**
 
 ```
-Candid smartphone photo, vertical 4:5. A 32-year-old woman with warm light-brown
-shoulder-length hair tied in a loose low bun, a few strands falling on her face,
-light freckles, natural skin texture with visible pores, minimal makeup,
-grey-green eyes, small silver hoop earrings. She wears an olive linen shirt over
-a white t-shirt. Sitting at a small metal table of a street café in a narrow sunny
-street in Valencia, Spain, holding a worn mustard-yellow notebook and a pen,
-a cup of coffee on the table. Relaxed genuine half-smile, looking directly at the
-camera. Late afternoon soft side light, slight background blur, everyday colors,
-no retouching, realistic, shot on iPhone.
+Candid smartphone photo of a beautiful 24-year-old woman, adult, naturally
+attractive with soft features, expressive grey-green eyes, long light-brown hair
+in a loose messy low bun with a few strands falling on her face, light freckles
+across her nose, natural glowing skin with real skin texture, light natural makeup,
+small silver hoop earrings. She wears an olive linen shirt over a white t-shirt.
+She sits at a small metal table of a street cafe in a narrow sunny street in
+Valencia, Spain, holding a worn mustard-yellow notebook and a pen, a cup of coffee
+on the table. Warm genuine smile, looking directly at the camera. Late afternoon
+golden side light, slight background blur, everyday colors, realistic, shot on iPhone
 ```
 
 **Негативный промпт**
 
 ```
-glamour, plastic skin, airbrushed, perfect symmetry, heavy makeup, studio lighting,
-text, watermark, logos, extra fingers, distorted hands
+teenager, child, underage, plastic skin, airbrushed, doll face, heavy makeup,
+studio lighting, text, watermark, logo, extra fingers, distorted hands, cartoon,
+3d render, older woman, wrinkles
 ```
 
 **Варианты сцен** (меняется только конец промпта, внешность остаётся той же):
