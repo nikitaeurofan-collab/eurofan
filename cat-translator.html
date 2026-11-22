@@ -1,0 +1,676 @@
+<title>Felinese Translator</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: field-guide workbench. Left column = observation form (signal chips), right column = translation readout with a reactive cat face. Stacks on phones. */
+:root {
+  --ground: #E6ECF0;
+  --paper: #F8FAFB;
+  --ink: #16202A;
+  --muted: #55636F;
+  --line: #C7D1D9;
+  --amber: #E3A622;
+  --amber-ink: #835500;
+  --amber-soft: #F6E5BC;
+  --nose: #D8668B;
+  --pupil: #10161C;
+  --warn-bg: #FBE7E4;
+  --warn-ink: #8E2B1F;
+  --chip-on-bg: #16202A;
+  --chip-on-fg: #F8FAFB;
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0D131A; --paper: #151E28; --ink: #E5EBF0; --muted: #93A1AD; --line: #2A3743;
+    --amber: #F2BE3C; --amber-ink: #F2BE3C; --amber-soft: #3A2F14; --nose: #EE8CAB;
+    --warn-bg: #3A1D19; --warn-ink: #FFB4A8; --chip-on-bg: #F2BE3C; --chip-on-fg: #10161C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0D131A; --paper: #151E28; --ink: #E5EBF0; --muted: #93A1AD; --line: #2A3743;
+  --amber: #F2BE3C; --amber-ink: #F2BE3C; --amber-soft: #3A2F14; --nose: #EE8CAB;
+  --warn-bg: #3A1D19; --warn-ink: #FFB4A8; --chip-on-bg: #F2BE3C; --chip-on-fg: #10161C;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 28px; }
+
+header.top { display: grid; gap: 10px; }
+.lang {
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.lang b { color: var(--amber-ink); font-weight: 500; }
+h1 {
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(32px, 5.4vw, 58px);
+  line-height: 1.02; letter-spacing: -0.025em; margin: 0; text-wrap: balance; max-width: 18ch;
+}
+h1 em { font-style: normal; color: var(--amber-ink); }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; font-size: 16px; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: grid; gap: 20px; min-width: 0; }
+.panel h2 { font-family: var(--f-display); font-weight: 700; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.panel-head .hint { font-size: 13px; color: var(--muted); }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+label.field { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+input[type="text"], select, textarea {
+  font: inherit; font-size: 15px; text-transform: none; letter-spacing: 0; font-weight: 400;
+  color: var(--ink); background: var(--ground); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%;
+}
+textarea { resize: vertical; min-height: 76px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, .photo-drop:focus-within {
+  outline: 2px solid var(--amber); outline-offset: 2px;
+}
+
+.group { display: grid; gap: 8px; }
+.group-title { display: flex; gap: 8px; align-items: baseline; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.group-title span { font-family: var(--f-mono); font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 11px; opacity: .85; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit; font-size: 14px; font-weight: 500; color: var(--ink); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--chip-on-bg); color: var(--chip-on-fg); border-color: var(--chip-on-bg); }
+
+.photo-drop {
+  display: flex; gap: 12px; align-items: center; border: 1px dashed var(--line); border-radius: 12px; padding: 12px; cursor: pointer;
+}
+.photo-drop.drag { border-color: var(--amber); background: var(--amber-soft); }
+.photo-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--ground); flex: none; }
+.photo-drop .txt { font-size: 14px; min-width: 0; }
+.photo-drop .txt small { display: block; color: var(--muted); font-size: 12px; }
+.linkbtn { font: inherit; font-size: 13px; background: none; border: 0; color: var(--amber-ink); text-decoration: underline; cursor: pointer; padding: 0; }
+
+.actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn {
+  font-family: var(--f-display); font-weight: 700; font-size: 17px; letter-spacing: -0.005em;
+  border: 0; border-radius: 12px; padding: 12px 20px; cursor: pointer; background: var(--amber); color: var(--pupil);
+}
+.btn:hover { filter: brightness(1.05); }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-family: var(--f-body); font-weight: 600; font-size: 14px; padding: 10px 14px; }
+.status { font-size: 13px; color: var(--muted); }
+
+/* Readout */
+.readout { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+@media (max-width: 860px) { .readout { position: static; } }
+.face-row { display: flex; gap: 18px; align-items: center; }
+.face { width: 132px; flex: none; max-width: 100%; }
+.face svg { display: block; width: 100%; height: auto; overflow: visible; }
+.badge {
+  display: inline-block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; color: var(--muted);
+}
+.badge.ai { border-color: var(--amber); color: var(--amber-ink); }
+.quote {
+  font-family: var(--f-display); font-weight: 700; font-size: clamp(21px, 2.4vw, 27px); line-height: 1.2;
+  letter-spacing: -0.015em; margin: 8px 0 0; text-wrap: balance; min-width: 0;
+}
+.quote.thinking { color: var(--muted); }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.tag { font-size: 13px; font-weight: 600; background: var(--amber-soft); color: var(--ink); border-radius: 999px; padding: 3px 10px; }
+.tag.conf { background: transparent; border: 1px solid var(--line); font-weight: 500; color: var(--muted); }
+
+.meters { display: grid; gap: 8px; }
+.meter { display: grid; grid-template-columns: 96px 1fr 34px; gap: 10px; align-items: center; font-size: 13px; }
+.meter .bar { height: 8px; background: var(--ground); border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+.meter .fill { height: 100%; background: var(--amber); border-radius: 99px; width: 0; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.meter .num { font-family: var(--f-mono); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+.sec { display: grid; gap: 8px; }
+.sec h3 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.sec p { margin: 0; max-width: 62ch; }
+.cues { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cues li { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 10px; font-size: 14px; border-top: 1px solid var(--line); padding-top: 6px; }
+.cues li b { font-weight: 600; }
+.cues li span { color: var(--muted); }
+@media (max-width: 480px) { .cues li { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.respond { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.vet { background: var(--warn-bg); color: var(--warn-ink); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.vet b { font-weight: 700; }
+
+.history { display: grid; gap: 6px; }
+.history button {
+  font: inherit; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: baseline;
+  background: transparent; border: 0; border-top: 1px solid var(--line); padding: 8px 0 2px; color: var(--ink); cursor: pointer;
+}
+.history button:hover .h-q { text-decoration: underline; }
+.h-q { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+.h-t { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+
+footer.note { font-size: 12px; color: var(--muted); max-width: 70ch; }
+
+/* Cat face animation */
+.ear { transition: transform .45s cubic-bezier(.3,1.4,.5,1); transform-box: fill-box; }
+.ear.l { transform-origin: 80% 100%; }
+.ear.r { transform-origin: 20% 100%; }
+.face[data-ears="sideways"] .ear.l { transform: rotate(-38deg) translateY(10px); }
+.face[data-ears="sideways"] .ear.r { transform: rotate(38deg) translateY(10px); }
+.face[data-ears="flat"] .ear.l { transform: rotate(-70deg) translate(-4px, 22px) scaleY(.8); }
+.face[data-ears="flat"] .ear.r { transform: rotate(70deg) translate(4px, 22px) scaleY(.8); }
+.face[data-ears="swivel"] .ear.l { animation: swivL 2.4s ease-in-out infinite; }
+.face[data-ears="swivel"] .ear.r { animation: swivR 2.4s ease-in-out infinite .4s; }
+@keyframes swivL { 0%,100% { transform: rotate(0); } 40% { transform: rotate(-22deg); } }
+@keyframes swivR { 0%,100% { transform: rotate(0); } 50% { transform: rotate(24deg); } }
+
+.eye { transform-box: fill-box; transform-origin: 50% 50%; animation: blink 6s infinite; }
+.pupil { transition: rx .4s, ry .4s; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.08); } }
+.face[data-eyes="blink"] .eye { animation: slowblink 4.2s ease-in-out infinite; }
+@keyframes slowblink { 0%, 15%, 85%, 100% { transform: scaleY(1); } 40%, 60% { transform: scaleY(.07); } }
+.face[data-eyes="half"] .eye { animation: none; transform: scaleY(.45); }
+.face[data-eyes="wide"] .pupil { rx: 9px; ry: 11px; }
+.face[data-eyes="narrow"] .pupil { rx: 1.4px; ry: 10px; }
+.face.thinking .head-g { animation: tilt 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 80%; }
+@keyframes tilt { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-9deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .eye, .face .ear, .face.thinking .head-g { animation: none !important; }
+  .ear, .meter .fill { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="lang"><b>Felinese</b> <span aria-hidden="true">→</span> <span>Human</span> <span aria-hidden="true">·</span> <span>Purr band 25–150 Hz</span></div>
+    <h1>What is your cat <em>actually</em> saying?</h1>
+    <p class="lede">Tap what you see and hear: the sound, the tail, the ears, the eyes. Add a photo if you have one. Claude reads the signals the way a feline behaviorist would, then translates them into words.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="form" autocomplete="off">
+      <div class="panel-head">
+        <h2>Observation</h2>
+        <span class="hint">Pick everything that applies</span>
+      </div>
+
+      <div class="row2">
+        <label class="field" for="catName">Cat's name
+          <input type="text" id="catName" placeholder="e.g. Mochi" maxlength="40">
+        </label>
+        <label class="field" for="voice">Translation voice
+          <select id="voice">
+            <option value="plain">Plain speaking</option>
+            <option value="dramatic">Dramatic aristocrat</option>
+            <option value="deadpan">Deadpan</option>
+            <option value="sweet">Sweet and clingy</option>
+            <option value="gremlin">Chaotic gremlin</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="groups" class="group-list" style="display:grid;gap:16px"></div>
+
+      <label class="field" for="notes">What's happening?
+        <textarea id="notes" placeholder="e.g. Sits by the door and stares at me every evening around 7, then walks off when I open it."></textarea>
+      </label>
+
+      <div id="photoWrap" hidden>
+        <label class="photo-drop" id="photoDrop" for="photo">
+          <input type="file" id="photo" accept="image/jpeg,image/png,image/webp,image/gif">
+          <img class="photo-thumb" id="photoThumb" alt="" hidden>
+          <span class="txt" id="photoTxt">Add a photo of your cat<small>Claude reads posture, ears, eyes and tail from it</small></span>
+        </label>
+        <button type="button" class="linkbtn" id="photoClear" hidden>Remove photo</button>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn" id="go">Translate</button>
+        <button type="button" class="btn ghost" id="stop" hidden>Stop</button>
+        <button type="button" class="btn ghost" id="reset">Clear</button>
+        <span class="status" id="status" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+
+    <section class="panel readout" aria-labelledby="outTitle">
+      <div class="face-row">
+        <div class="face" id="face" data-ears="forward" data-eyes="open" aria-hidden="true">
+          <svg viewBox="0 0 200 170">
+            <g class="head-g">
+              <g class="ear l"><polygon points="34,78 50,8 98,46" fill="var(--ink)"/><polygon points="46,66 54,26 82,48" fill="var(--nose)" opacity=".55"/></g>
+              <g class="ear r"><polygon points="166,78 150,8 102,46" fill="var(--ink)"/><polygon points="154,66 146,26 118,48" fill="var(--nose)" opacity=".55"/></g>
+              <ellipse cx="100" cy="98" rx="74" ry="62" fill="var(--ink)"/>
+              <g class="eye"><ellipse cx="70" cy="92" rx="15" ry="13" fill="var(--amber)"/><ellipse class="pupil" cx="70" cy="92" rx="3.6" ry="10" fill="var(--pupil)"/><circle cx="74" cy="87" r="2.4" fill="var(--paper)" opacity=".85"/></g>
+              <g class="eye"><ellipse cx="130" cy="92" rx="15" ry="13" fill="var(--amber)"/><ellipse class="pupil" cx="130" cy="92" rx="3.6" ry="10" fill="var(--pupil)"/><circle cx="134" cy="87" r="2.4" fill="var(--paper)" opacity=".85"/></g>
+              <polygon points="93,116 107,116 100,124" fill="var(--nose)"/>
+              <path d="M100 124 q-5 9 -13 5 M100 124 q5 9 13 5" stroke="var(--paper)" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".8"/>
+              <g stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round">
+                <line x1="62" y1="118" x2="8" y2="110"/><line x1="62" y1="124" x2="6" y2="126"/><line x1="64" y1="130" x2="12" y2="142"/>
+                <line x1="138" y1="118" x2="192" y2="110"/><line x1="138" y1="124" x2="194" y2="126"/><line x1="136" y1="130" x2="188" y2="142"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div style="min-width:0">
+          <span class="badge" id="badge">Example</span>
+          <p class="quote" id="outTitle">…</p>
+          <div class="tags" id="tags"></div>
+        </div>
+      </div>
+
+      <div class="meters" id="meters"></div>
+
+      <div class="sec" id="vetSec" hidden><div class="vet" id="vet"></div></div>
+
+      <div class="sec">
+        <h3>Signals read</h3>
+        <ul class="cues" id="cues"></ul>
+      </div>
+      <div class="sec">
+        <h3>What's going on</h3>
+        <p id="behind"></p>
+      </div>
+      <div class="sec">
+        <h3>How to respond</h3>
+        <ol class="respond" id="respond"></ol>
+      </div>
+
+      <div class="sec" id="histSec" hidden>
+        <h3>Recent translations</h3>
+        <div class="history" id="history"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="note">For fun and for understanding, not diagnosis. Cat body language is real science but every cat is an individual. If behavior changes suddenly, or your cat hides, stops eating, or strains in the litter box, call your vet.</footer>
+</div>
+
+<script>
+(() => {
+  // ---------- Signal vocabulary (grounded in common feline-behavior readings) ----------
+  // w: c=contentment, q=curiosity, a=annoyance, h=hunger, f=affection
+  const GROUPS = [
+    { id: "sound", title: "Sound", unit: "meows ~ 300–1000 Hz", items: [
+      ["meow_short", "Short meow", "A greeting or a quick request", "Oh, hello. You're here. Good.", { f: 15, q: 5 }],
+      ["meow_long", "Long, drawn-out meow", "A demand, often food or a closed door", "I have waited an ETERNITY. Fix this.", { h: 30, a: 15 }],
+      ["trill", "Chirp or trill", "A friendly hello or 'follow me'", "Hi hi! Come, come, I'll show you.", { f: 25, c: 15, q: 10 }],
+      ["chatter", "Chattering", "Predatory excitement with a bit of frustration", "Bird. Bird. BIRD. Let me at it.", { q: 35, a: 10 }],
+      ["purr", "Purring", "Usually content; sometimes self-soothing", "This is acceptable. Continue.", { c: 35, f: 20 }],
+      ["hiss", "Hiss", "A defensive warning to back off", "Not one step closer.", { a: 50, c: -30, f: -20 }],
+      ["growl", "Low growl", "A serious, escalating warning", "I am asking nicely one last time.", { a: 55, c: -30 }],
+      ["yowl", "Yowling", "Distress, a mating call, or confusion in older cats", "Hear me, household, for I suffer!", { a: 25, c: -15 }, true],
+      ["silent", "Silent meow", "A soft request from a cat who trusts you", "…please?", { f: 25, h: 10 }],
+    ]},
+    { id: "tail", title: "Tail", unit: "angle matters", items: [
+      ["up", "Straight up", "A friendly greeting", "Ah, my favourite human. Approach.", { f: 25, c: 15 }],
+      ["hook", "Question-mark tip", "Playful and open to interaction", "Want to do something fun? I do.", { q: 25, f: 10 }],
+      ["wrapped", "Wrapped around body", "Relaxed, or politely reserved", "I'm comfortable right here, thanks.", { c: 15 }],
+      ["low", "Low or tucked", "Anxious or trying not to be noticed", "I'd rather not be seen right now.", { c: -20, a: 10 }],
+      ["puffed", "Puffed up", "Startled or frightened", "WHAT WAS THAT.", { a: 35, c: -30 }],
+      ["thrash", "Thrashing or thumping", "Irritated or overstimulated", "My patience is running out.", { a: 40, c: -20 }],
+      ["twitch", "Tip twitching", "Focused, or mildly irritated", "I am watching. I am always watching.", { q: 20, a: 10 }],
+    ]},
+    { id: "ears", title: "Ears", unit: "32 muscles each", items: [
+      ["forward", "Forward", "Alert and interested", "Tell me more.", { q: 20 }],
+      ["swivel", "Swiveling", "Tracking sounds, assessing the room", "Something's happening in the next room.", { q: 20 }],
+      ["sideways", "Sideways (airplane)", "Irritated or uneasy", "I'm not thrilled about this.", { a: 25, c: -10 }],
+      ["flat", "Flat back", "Fear or defensive aggression", "Leave. Me. Alone.", { a: 45, c: -30 }],
+    ]},
+    { id: "eyes", title: "Eyes", unit: "pupils say a lot", items: [
+      ["slowblink", "Slow blink", "Trust; the cat version of a smile", "I trust you. You may blink back.", { f: 35, c: 25 }],
+      ["half", "Half-closed", "Relaxed and drowsy", "Mmm. Nap o'clock.", { c: 30 }],
+      ["wide", "Wide, dilated pupils", "Excited, playful, or scared", "Something exciting is happening!", { q: 25, a: 10 }],
+      ["stare", "Hard stare", "A challenge or intense focus", "I saw what you did.", { a: 20, q: 10 }],
+      ["narrow", "Narrow slit pupils", "Bright light, or tense and focused", "Don't test me.", { a: 15 }],
+    ]},
+    { id: "body", title: "Body", unit: "posture", items: [
+      ["knead", "Kneading", "Contentment; a comfort habit from kittenhood", "Making biscuits. You are the dough.", { c: 35, f: 25 }],
+      ["belly", "Belly-up", "Trust, though not always an invitation to rub", "Admire me. Do NOT touch the belly.", { c: 20, f: 15, a: 5 }],
+      ["headbutt", "Head-butting you", "Scent-marking you as family", "You belong to me now.", { f: 40 }],
+      ["loaf", "Loaf position", "Relaxed but ready", "Comfortable. Mildly judging.", { c: 25 }],
+      ["arched", "Arched back", "Defensive display, or a big stretch", "Behold: I am large and terrifying.", { a: 30 }],
+      ["crouch", "Crouched low", "Fearful, or stalking something", "Stay still. Stay very still.", { q: 15, a: 15, c: -10 }],
+      ["wiggle", "Butt wiggle", "Pre-pounce excitement", "Three… two… one…", { q: 35 }],
+      ["roll", "Rolling on the floor", "A greeting or an invitation to play", "Look how charming I am.", { f: 20, q: 10 }],
+      ["hiding", "Hiding", "Stress, fear, or possibly feeling unwell", "I need to be invisible for a while.", { c: -25, a: 10 }, true],
+    ]},
+    { id: "context", title: "Situation", unit: "context changes everything", items: [
+      ["food", "Near the food bowl", "Food is almost certainly the topic", "The bowl. Look at the bowl.", { h: 45 }],
+      ["night", "It's 4 a.m.", "Crepuscular cats peak around dawn and dusk", "Rise. It is the hour of the hunt.", { h: 20, q: 20 }],
+      ["window", "At the window", "Watching birds or outdoor cats", "There's a whole world out there.", { q: 30 }],
+      ["petting", "Just got petted", "Watch for overstimulation if tail or ears change", "That was enough. Lovely, but enough.", { f: 10, a: 10 }],
+      ["carrier", "Carrier is out", "Most cats link the carrier with the vet", "I know what that box means.", { a: 30, c: -25 }],
+      ["guest", "New person nearby", "Sizing up a stranger", "Who is this and why are they here?", { q: 20, a: 10 }],
+      ["litter", "Near the litter box", "Watch for straining or frequent trips", "This is a private matter.", { a: 5 }, true],
+      ["laptop", "You're on your laptop", "Your attention is the prize", "That glowing rectangle is my rival.", { f: 20, a: 10 }],
+    ]},
+  ];
+  const ITEMS = {};
+  GROUPS.forEach(g => g.items.forEach(([id, label, reads, says, w, flag]) => { ITEMS[id] = { id, group: g.id, groupTitle: g.title, label, reads, says, w, flag: !!flag }; }));
+
+  const METERS = [["contentment", "Contentment"], ["curiosity", "Curiosity"], ["annoyance", "Annoyance"], ["hunger", "Hunger"], ["affection", "Affection"]];
+  const KEYMAP = { c: "contentment", q: "curiosity", a: "annoyance", h: "hunger", f: "affection" };
+  const VOICES = {
+    plain: "plain, natural, a little wry",
+    dramatic: "a theatrical Victorian aristocrat, wildly over-the-top",
+    deadpan: "dry, deadpan, unimpressed",
+    sweet: "sweet, clingy and adoring",
+    gremlin: "a chaotic little gremlin, all caps allowed, mischievous",
+  };
+
+  const $ = id => document.getElementById(id);
+  const selected = new Set();
+
+  // ---------- Render chips ----------
+  const groupsEl = $("groups");
+  GROUPS.forEach(g => {
+    const wrap = document.createElement("div");
+    wrap.className = "group";
+    const t = document.createElement("div");
+    t.className = "group-title";
+    t.id = "g-" + g.id;
+    t.textContent = g.title + " ";
+    const u = document.createElement("span"); u.textContent = g.unit; t.append(u);
+    const chips = document.createElement("div");
+    chips.className = "chips"; chips.setAttribute("role", "group"); chips.setAttribute("aria-labelledby", t.id);
+    g.items.forEach(([id, label, reads]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.id = "chip-" + id; b.dataset.id = id;
+      b.textContent = label; b.title = reads; b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => toggle(id));
+      chips.append(b);
+    });
+    wrap.append(t, chips);
+    groupsEl.append(wrap);
+  });
+  function toggle(id, on) {
+    const want = on ?? !selected.has(id);
+    want ? selected.add(id) : selected.delete(id);
+    const b = $("chip-" + id); if (b) b.setAttribute("aria-pressed", String(want));
+  }
+
+  // ---------- Offline interpreter (used for the example and whenever Claude is unavailable) ----------
+  const clamp = n => Math.max(0, Math.min(100, Math.round(n)));
+  const RESPOND = {
+    contentment: ["Keep doing whatever you're doing; it's working.", "Offer a slow blink back to say you feel the same.", "Let them stay put. Don't scoop up a happy cat."],
+    curiosity: ["Give them something to investigate: a box, a paper bag, a new toy.", "Try a 10-minute wand-toy session that ends with a 'catch'.", "Open a window view or set up a bird feeder outside."],
+    annoyance: ["Give space and stop touching for now.", "Lower your voice and avoid direct staring.", "Make sure there's an easy escape route or a high perch."],
+    hunger: ["Check the bowl and the clock; is it actually mealtime?", "If it's not, try a puzzle feeder instead of extra food.", "Stick to a consistent feeding schedule so the 4 a.m. campaign fades."],
+    affection: ["Offer a hand at nose height and let them rub against it.", "Gentle chin and cheek scratches are usually the safest bet.", "Slow blink back. It's the cat way of saying 'same'."],
+  };
+  const MOODS = { contentment: "Content", curiosity: "Curious", annoyance: "Annoyed", hunger: "Hungry", affection: "Affectionate" };
+
+  function interpretLocally(ids, name) {
+    const m = { contentment: 40, curiosity: 30, annoyance: 10, hunger: 20, affection: 35 };
+    const items = ids.map(id => ITEMS[id]).filter(Boolean);
+    items.forEach(it => Object.entries(it.w).forEach(([k, v]) => { m[KEYMAP[k]] += v; }));
+    Object.keys(m).forEach(k => m[k] = clamp(m[k]));
+    const ranked = [...items].sort((a, b) => strength(b) - strength(a));
+    const top = Object.entries(m).sort((a, b) => b[1] - a[1])[0][0];
+    const says = ranked.slice(0, 2).map(i => i.says).join(" ") || "…(stares at you, waiting for you to notice something)";
+    const ears = ids.includes("flat") ? "flat" : ids.includes("sideways") ? "sideways" : ids.includes("swivel") ? "swivel" : m.annoyance > 65 ? "flat" : m.annoyance > 45 ? "sideways" : "forward";
+    const eyes = ids.includes("slowblink") ? "blink" : ids.includes("half") ? "half" : ids.includes("wide") ? "wide" : ids.includes("narrow") || ids.includes("stare") ? "narrow" : m.contentment > 70 ? "half" : "open";
+    const flagged = items.filter(i => i.flag);
+    const who = name || "Your cat";
+    const behind = items.length
+      ? `${who} is showing ${items.length} signal${items.length > 1 ? "s" : ""}. ${ranked.slice(0, 3).map(i => `${i.label}: ${i.reads.charAt(0).toLowerCase() + i.reads.slice(1)}.`).join(" ")} Taken together, the strongest theme is ${MOODS[top].toLowerCase()}.`
+      : `Pick a few signals and this reading gets much more specific.`;
+    return {
+      translation: says,
+      mood: MOODS[top],
+      confidence: items.length >= 3 ? "medium" : "low",
+      meters: m,
+      face: { ears, eyes },
+      signals: ranked.slice(0, 4).map(i => ({ cue: i.label, reads: i.reads })),
+      behind,
+      respond: RESPOND[top],
+      vet: flagged.length ? `${flagged.map(f => f.label).join(" and ")} can sometimes point to pain or illness. If it's new, frequent, or comes with changes in eating or litter habits, check in with your vet.` : null,
+    };
+  }
+  const strength = it => Object.values(it.w).reduce((s, v) => s + Math.abs(v), 0);
+
+  // ---------- Readout rendering ----------
+  function render(r, source) {
+    const badge = $("badge");
+    badge.textContent = source === "ai" ? "Claude translation" : source === "example" ? "Example translation" : "Quick guess (offline)";
+    badge.className = "badge" + (source === "ai" ? " ai" : "");
+    const q = $("outTitle");
+    q.classList.remove("thinking");
+    q.textContent = "“" + r.translation + "”";
+    const tags = $("tags"); tags.replaceChildren();
+    if (r.mood) { const t = document.createElement("span"); t.className = "tag"; t.textContent = r.mood; tags.append(t); }
+    if (r.confidence) { const t = document.createElement("span"); t.className = "tag conf"; t.textContent = r.confidence + " confidence"; tags.append(t); }
+
+    const meters = $("meters"); meters.replaceChildren();
+    METERS.forEach(([k, label]) => {
+      const v = clamp(Number(r.meters?.[k]) || 0);
+      const row = document.createElement("div"); row.className = "meter";
+      row.innerHTML = `<span></span><div class="bar" role="meter" aria-valuemin="0" aria-valuemax="100"><div class="fill"></div></div><span class="num"></span>`;
+      row.children[0].textContent = label;
+      row.children[1].setAttribute("aria-valuenow", v); row.children[1].setAttribute("aria-label", label);
+      row.children[2].textContent = v;
+      meters.append(row);
+      requestAnimationFrame(() => requestAnimationFrame(() => { row.querySelector(".fill").style.width = v + "%"; }));
+    });
+
+    const face = $("face");
+    face.classList.remove("thinking");
+    face.dataset.ears = ["forward", "swivel", "sideways", "flat"].includes(r.face?.ears) ? r.face.ears : "forward";
+    face.dataset.eyes = ["open", "blink", "half", "wide", "narrow"].includes(r.face?.eyes) ? r.face.eyes : "open";
+
+    const vet = $("vetSec");
+    if (r.vet) { $("vet").replaceChildren(Object.assign(document.createElement("b"), { textContent: "Worth a vet check: " }), document.createTextNode(r.vet)); vet.hidden = false; }
+    else vet.hidden = true;
+
+    const cues = $("cues"); cues.replaceChildren();
+    (r.signals || []).slice(0, 5).forEach(s => {
+      const li = document.createElement("li");
+      const b = document.createElement("b"); b.textContent = s.cue;
+      const sp = document.createElement("span"); sp.textContent = s.reads;
+      li.append(b, sp); cues.append(li);
+    });
+    if (!cues.children.length) { const li = document.createElement("li"); li.textContent = "No specific signals selected."; cues.append(li); }
+    $("behind").textContent = r.behind || "";
+    const ol = $("respond"); ol.replaceChildren();
+    (r.respond || []).slice(0, 4).forEach(x => { const li = document.createElement("li"); li.textContent = x; ol.append(li); });
+  }
+
+  function showThinking() {
+    $("outTitle").textContent = "Listening closely…";
+    $("outTitle").classList.add("thinking");
+    $("face").classList.add("thinking");
+    $("face").dataset.ears = "swivel";
+    $("badge").textContent = "Translating";
+    $("badge").className = "badge ai";
+  }
+
+  // ---------- History (per-viewer convenience) ----------
+  const HKEY = "felinese.history.v1";
+  function loadHist() { try { return JSON.parse(localStorage.getItem(HKEY) || "[]"); } catch { return []; } }
+  function saveHist(list) { try { localStorage.setItem(HKEY, JSON.stringify(list.slice(0, 8))); } catch {} }
+  function renderHist() {
+    const list = loadHist();
+    $("histSec").hidden = !list.length;
+    const h = $("history"); h.replaceChildren();
+    list.forEach(e => {
+      const b = document.createElement("button"); b.type = "button";
+      const q = document.createElement("span"); q.className = "h-q"; q.textContent = (e.name ? e.name + ": " : "") + "“" + e.result.translation + "”";
+      const t = document.createElement("span"); t.className = "h-t"; t.textContent = new Date(e.ts).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+      b.append(q, t);
+      b.addEventListener("click", () => {
+        [...selected].forEach(id => toggle(id, false));
+        (e.ids || []).forEach(id => toggle(id, true));
+        $("catName").value = e.name || ""; $("notes").value = e.notes || "";
+        render(e.result, e.source);
+      });
+      h.append(b);
+    });
+  }
+
+  // ---------- Photo ----------
+  let photo = null;
+  function setPhoto(file) {
+    photo = file || null;
+    const th = $("photoThumb");
+    if (th.src) URL.revokeObjectURL(th.src);
+    if (photo) {
+      th.src = URL.createObjectURL(photo); th.hidden = false;
+      $("photoTxt").firstChild.textContent = photo.name.length > 32 ? photo.name.slice(0, 30) + "…" : photo.name;
+      $("photoClear").hidden = false;
+    } else {
+      th.removeAttribute("src"); th.hidden = true;
+      $("photoTxt").firstChild.textContent = "Add a photo of your cat";
+      $("photoClear").hidden = true; $("photo").value = "";
+    }
+  }
+  $("photo").addEventListener("change", e => setPhoto(e.target.files[0]));
+  $("photoClear").addEventListener("click", () => setPhoto(null));
+  const drop = $("photoDrop");
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); }));
+  drop.addEventListener("drop", e => { const f = e.dataTransfer?.files?.[0]; if (f && f.type.startsWith("image/")) setPhoto(f); });
+
+  // ---------- Claude ----------
+  let sample = null, canImages = false, aiOff = false, ctl = null;
+  const ready = (window.claude && typeof window.claude.use === "function") ? window.claude.use("sample") : Promise.resolve(null);
+  ready.then(async s => {
+    sample = s;
+    if (!s) return;
+    const lim = await s.limits().catch(() => null);
+    canImages = !!lim?.images;
+    $("photoWrap").hidden = !canImages;
+  }).catch(() => {});
+
+  function buildPrompt(ids, name, notes, voice, hasPhoto) {
+    const lines = GROUPS.map(g => {
+      const picked = ids.filter(id => ITEMS[id].group === g.id).map(id => ITEMS[id].label);
+      return picked.length ? `- ${g.title}: ${picked.join(", ")}` : null;
+    }).filter(Boolean);
+    return `You are the engine of a playful "cat translator" app. You interpret a cat's behaviour the way an experienced feline behaviourist would, then voice it as the cat.
+
+Ground every reading in established cat behaviour science, for example: tail straight up = friendly greeting; slow blink = trust; kneading = contentment/comfort; airplane or flat ears = irritation or fear; belly-up shows trust but is often not an invitation to rub; adult cats meow mostly to humans; purring usually means content but can also be self-soothing when stressed or in pain; tail thrashing during petting = overstimulation. Combine signals rather than reading each alone, and be honest about uncertainty.
+
+If anything could point to pain, illness or real distress (hiding, straining or frequent trips to the litter box, yowling especially in an older cat, sudden behaviour change, not eating, open-mouth breathing, aggression when touched), set "vet" to one calm, specific sentence. Otherwise "vet" is null.
+
+Cat's name: ${name || "(not given; say 'your cat')"}
+Translation voice for the "translation" line: ${VOICES[voice] || VOICES.plain}
+Observed signals:
+${lines.length ? lines.join("\n") : "- (none selected)"}
+Owner's description: ${notes ? notes.slice(0, 1500) : "(none)"}
+${hasPhoto ? "A photo of the cat is attached. Read its posture, ears, eyes, tail and surroundings, and mention what you saw in the photo among the signals." : ""}
+
+Reply with only a JSON object of exactly this shape:
+{
+  "translation": "what the cat is 'saying', first person, in the requested voice, max 30 words",
+  "mood": "one or two words",
+  "confidence": "low" | "medium" | "high",
+  "meters": { "contentment": 0-100, "curiosity": 0-100, "annoyance": 0-100, "hunger": 0-100, "affection": 0-100 },
+  "face": { "ears": "forward" | "swivel" | "sideways" | "flat", "eyes": "open" | "blink" | "half" | "wide" | "narrow" },
+  "signals": [ { "cue": "short name of a signal", "reads": "what it usually means, under 14 words" } ],
+  "behind": "2-3 plain sentences for the owner explaining what is most likely going on and why",
+  "respond": [ "2-3 short, practical things the owner can do now" ],
+  "vet": null
+}`;
+  }
+
+  function cleanResult(r, fallback) {
+    if (!r || typeof r !== "object" || typeof r.translation !== "string") return fallback;
+    const meters = {};
+    METERS.forEach(([k]) => meters[k] = clamp(Number(r.meters?.[k] ?? fallback.meters[k])));
+    return {
+      translation: String(r.translation).slice(0, 260),
+      mood: String(r.mood || fallback.mood).slice(0, 30),
+      confidence: ["low", "medium", "high"].includes(r.confidence) ? r.confidence : "medium",
+      meters,
+      face: { ears: r.face?.ears, eyes: r.face?.eyes },
+      signals: Array.isArray(r.signals) ? r.signals.filter(s => s && s.cue).slice(0, 5).map(s => ({ cue: String(s.cue).slice(0, 60), reads: String(s.reads || "").slice(0, 140) })) : fallback.signals,
+      behind: String(r.behind || fallback.behind).slice(0, 900),
+      respond: Array.isArray(r.respond) && r.respond.length ? r.respond.slice(0, 4).map(x => String(x).slice(0, 200)) : fallback.respond,
+      vet: r.vet ? String(r.vet).slice(0, 300) : null,
+    };
+  }
+
+  const ERR = {
+    not_granted: "Claude isn't allowed on this page, so here's a quick offline guess instead.",
+    sampling_disabled: "Claude isn't available on this account, so here's a quick offline guess.",
+    rate_limited: "Too many translations at once. Here's a quick offline guess; try Claude again in a minute.",
+    session_expired: "Your session expired. Sign in again to use Claude. Here's an offline guess for now.",
+    image_rejected: "That photo couldn't be read. Try a JPEG or PNG under 20 MB.",
+    refused: "Claude declined that one. Try describing it differently.",
+    invalid_json: "The translation came back garbled. Tap Translate to try again.",
+  };
+  const PERMANENT = new Set(["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"]);
+
+  const status = $("status");
+  $("form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const ids = [...selected];
+    const name = $("catName").value.trim();
+    const notes = $("notes").value.trim();
+    const voice = $("voice").value;
+    const usePhoto = canImages && photo;
+    if (!ids.length && !notes && !usePhoto) { status.textContent = "Pick at least one signal, describe what's happening, or add a photo."; return; }
+    const local = interpretLocally(ids, name);
+    status.textContent = "";
+
+    if (!sample || aiOff) { finish(local, "local"); return; }
+
+    ctl = new AbortController();
+    $("go").disabled = true; $("stop").hidden = false;
+    showThinking();
+    try {
+      const raw = await sample.json(buildPrompt(ids, name, notes, voice, !!usePhoto), {
+        modelTier: "quick", signal: ctl.signal, cache: false, ...(usePhoto ? { images: [photo] } : {}),
+      });
+      finish(cleanResult(raw, local), "ai");
+    } catch (err) {
+      const code = err?.code || "upstream_error";
+      if (code === "cancelled") { render(local, "local"); status.textContent = "Stopped. Showing a quick offline guess."; }
+      else {
+        if (PERMANENT.has(code)) { aiOff = true; $("photoWrap").hidden = true; }
+        if (code === "image_rejected" || code === "refused" || code === "invalid_json") { render(local, "local"); status.textContent = ERR[code]; }
+        else { finish(local, "local"); status.textContent = ERR[code] || "Couldn't reach Claude. Here's a quick offline guess; tap Translate to try again."; }
+      }
+    } finally {
+      $("go").disabled = false; $("stop").hidden = true; ctl = null;
+    }
+
+    function finish(result, source) {
+      render(result, source);
+      const list = loadHist();
+      list.unshift({ ts: Date.now(), ids, name, notes, result, source });
+      saveHist(list); renderHist();
+    }
+  });
+  $("stop").addEventListener("click", () => ctl?.abort());
+  $("reset").addEventListener("click", () => {
+    [...selected].forEach(id => toggle(id, false));
+    $("notes").value = ""; setPhoto(null); status.textContent = "";
+  });
+
+  // ---------- Opening state: a worked example ----------
+  const EXAMPLE = ["trill", "up", "headbutt", "food"];
+  EXAMPLE.forEach(id => toggle(id, true));
+  $("catName").value = "Mochi";
+  render(interpretLocally(EXAMPLE, "Mochi"), "example");
+  renderHist();
+})();
+</script>
